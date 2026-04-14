@@ -63,13 +63,28 @@ public class AppSetup {
     public static final String PATH_I18N_RESSOURCES_DIR = Path.of(PATH_APP_ROOT_DIR, "resources", "i18n").toString();
     public static final String PATH_ICONS_RESOURCES_DIR = Path.of(PATH_APP_ROOT_DIR, "resources", "icons").toString();
     public static final String PATH_FONTS_RESOURCES_DIR = Path.of(PATH_APP_ROOT_DIR, "resources", "fonts").toString();
-
-    public static final String PATH_CONFIGURATION_FILE = Path.of(PATH_APP_ROOT_DIR, "resources", "config.json")
-            .toString();
     public static final String PATH_TRANSLATIONS_DIR = Path
             .of(PATH_APP_ROOT_DIR, "resources", "i18n").toString();
 
-    // setting up colors and icons (order matters)
+    private static String getConfigDir() {
+        File configDir = null;
+        if (IS_WINDOWS) {
+            String appData = System.getenv("APPDATA");
+            configDir = new File(appData, "%s".formatted(APP_NAME));
+        } else {
+            configDir = new File(System.getProperty("user.home"), ".config/%s".formatted(APP_NAME));
+        }
+        if (!configDir.exists()) {
+            configDir.mkdirs();
+        }
+        return configDir.toString();
+    }
+
+    public static final String PATH_CONFIGURATION_DIR = getConfigDir();
+
+    public static final String PATH_CONFIGURATION_FILE = Path.of(PATH_CONFIGURATION_DIR, "config.json")
+            .toString();
+
     public static ConfigSet CONFIG;
     public static AppColors COLORS;
     public static AppIcons ICONS;
