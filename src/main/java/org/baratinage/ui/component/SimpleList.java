@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -438,6 +439,10 @@ public class SimpleList<A> extends JScrollPane {
 
             list.setSelectedIndices(selected);
         }
+    }
+
+    public void addFocusListener(FocusListener l) {
+        list.addFocusListener(l);
     }
 
 }

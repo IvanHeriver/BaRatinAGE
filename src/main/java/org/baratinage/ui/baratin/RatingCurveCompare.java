@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import org.baratinage.AppSetup;
 import org.baratinage.translation.T;
 import org.baratinage.ui.bam.BamConfig;
 import org.baratinage.ui.bam.BamItem;
@@ -53,6 +54,7 @@ public class RatingCurveCompare extends BamItem {
     public final BamItemParent rcTwo;
     public final PlotContainer plotContainer;
     private final RatingCurvePlotToolsPanel plotToolsPanel;
+    private final SimpleFlowPanel plotItemEditionPanel;
 
     private Plot plot;
 
@@ -75,7 +77,8 @@ public class RatingCurveCompare extends BamItem {
         }
     }
 
-    public RatingCurveCompare(String uuid, BaratinProject project) {
+    public RatingCurveCompare(
+            String uuid, BaratinProject project) {
         super(BamItemType.COMPARING_RATING_CURVES, uuid, project);
 
         // rating curves chooser
@@ -155,7 +158,7 @@ public class RatingCurveCompare extends BamItem {
         Misc.setMinimumSize(episList, 300, null);
 
         // plot item edition
-        SimpleFlowPanel plotItemEditionPanel = new SimpleFlowPanel(true);
+        plotItemEditionPanel = new SimpleFlowPanel(true);
 
         // plot configuration
         SimpleFlowPanel plotConfigPanel = new SimpleFlowPanel();
@@ -281,30 +284,7 @@ public class RatingCurveCompare extends BamItem {
         });
 
         episList.addSelectionChangeListeners(l -> {
-            plotItemEditionPanel.removeAll();
-            plotItemEditionPanel.revalidate();
-            List<EPI> epis = episList.getSelectedObjects();
-            if (epis.size() == 0) {
-                return;
-            }
-            EPI epi = episList.getSelectedObject();
-
-            EditablePlotItem e = getEditablePlotItem(epi);
-            if (e == null) {
-                return;
-            }
-
-            List<EditablePlotItem> ePltItemList = getEditablePlotItems(epis);
-
-            if (ePltItemList.size() > 1) {
-
-            } else {
-                SimpleFlowPanel ePanel = e.getEditionPanel();
-                ePanel.setGap(5);
-                ePanel.setPadding(5, 0, 5, 0);
-                plotItemEditionPanel.addChild(ePanel, false);
-
-            }
+            updatePlotItemEditionPanel();
         });
 
         plotToolsPanel.addChangeListener(l -> {
@@ -313,6 +293,61 @@ public class RatingCurveCompare extends BamItem {
             resetPlot();
         });
 
+        // shortcuts
+        AppSetup.SHORTCUTS.setFocusDepedentContext(episList, this);
+        AppSetup.SHORTCUTS.setBindingAction(
+                "rc_comparator.toggle_item_display",
+                this,
+                () -> {
+                    List<EPI> selected = episList.getSelectedObjects();
+                    List<EditablePlotItem> ePltItemList = getEditablePlotItems(selected);
+                    for (EditablePlotItem epi : ePltItemList) {
+                        epi.setShowItem(!epi.showItem());
+                        epi.updatePlotItems();
+                    }
+                    resetPlot();
+                    updatePlotItemEditionPanel();
+                });
+        AppSetup.SHORTCUTS.setBindingAction(
+                "rc_comparator.toggle_item_lgd_display",
+                this,
+                () -> {
+                    List<EPI> selected = episList.getSelectedObjects();
+                    List<EditablePlotItem> ePltItemList = getEditablePlotItems(selected);
+                    for (EditablePlotItem epi : ePltItemList) {
+                        epi.setShowLegend(!epi.showLegend());
+                        epi.updatePlotItems();
+                    }
+                    resetPlot();
+                    updatePlotItemEditionPanel();
+                });
+    }
+
+    private void updatePlotItemEditionPanel() {
+        plotItemEditionPanel.removeAll();
+        plotItemEditionPanel.revalidate();
+        List<EPI> epis = episList.getSelectedObjects();
+        if (epis.size() == 0) {
+            return;
+        }
+        EPI epi = episList.getSelectedObject();
+
+        EditablePlotItem e = getEditablePlotItem(epi);
+        if (e == null) {
+            return;
+        }
+
+        List<EditablePlotItem> ePltItemList = getEditablePlotItems(epis);
+
+        if (ePltItemList.size() > 1) {
+
+        } else {
+            SimpleFlowPanel ePanel = e.getEditionPanel();
+            ePanel.setGap(5);
+            ePanel.setPadding(5, 0, 5, 0);
+            plotItemEditionPanel.addChild(ePanel, false);
+
+        }
     }
 
     private EditablePlotItem getEditablePlotItem(EPI epi) {

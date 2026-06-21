@@ -23,6 +23,8 @@ import org.baratinage.report_exporter.ReportExporter;
 import org.baratinage.translation.T;
 import org.baratinage.ui.component.CommonDialog;
 import org.baratinage.ui.config.ConfigItem;
+import org.baratinage.ui.shortcuts.Binding;
+import org.baratinage.ui.shortcuts.Shortcut;
 import org.baratinage.utils.ConsoleLogger;
 
 public class MainMenuBar extends JMenuBar {
@@ -93,21 +95,26 @@ public class MainMenuBar extends JMenuBar {
 
     private void initFileMenu() {
 
-        JMenuItem newProjectMenuItem = new JMenuItem();
-        T.t(this, newProjectMenuItem, false, "create_baratin_project");
-        newProjectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-        newProjectMenuItem.addActionListener((e) -> {
+        AppSetup.SHORTCUTS.setBindingAction("global.new_project", () -> {
             AppSetup.MAIN_FRAME.newProject();
         });
+        JMenuItem newProjectMenuItem = AppSetup.SHORTCUTS.createMenuItem("global.new_project");
+        T.t(this, newProjectMenuItem, false, "create_baratin_project");
         fileMenu.add(newProjectMenuItem);
 
-        JMenuItem openProjectMenuItem = new JMenuItem();
-        T.t(this, openProjectMenuItem, false, "open_project");
-        openProjectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
-        openProjectMenuItem.addActionListener((e) -> {
+        AppSetup.SHORTCUTS.setBindingAction("global.open_project", () -> {
             AppSetup.MAIN_FRAME.loadProject();
         });
+        JMenuItem openProjectMenuItem = AppSetup.SHORTCUTS.createMenuItem("global.open_project");
+        T.t(this, openProjectMenuItem, false, "open_project");
         fileMenu.add(openProjectMenuItem);
+
+        AppSetup.SHORTCUTS.setBindingAction("global.save_project", () -> {
+            AppSetup.MAIN_FRAME.saveProject(false);
+        });
+        JMenuItem saveProjectMenuItem = AppSetup.SHORTCUTS.createMenuItem("global.save_project");
+        T.t(this, saveProjectMenuItem, false, "save_project");
+        fileMenu.add(saveProjectMenuItem);
 
         T.t(this, saveProjectAsMenuItem, false, "save_project_as");
         saveProjectAsMenuItem
@@ -116,13 +123,6 @@ public class MainMenuBar extends JMenuBar {
             AppSetup.MAIN_FRAME.saveProject(true);
         });
         fileMenu.add(saveProjectAsMenuItem);
-
-        T.t(this, saveProjectMenuItem, false, "save_project");
-        saveProjectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
-        saveProjectMenuItem.addActionListener((e) -> {
-            AppSetup.MAIN_FRAME.saveProject(false);
-        });
-        fileMenu.add(saveProjectMenuItem);
 
         T.t(this, closeProjectMenuItem, false, "close_project");
         closeProjectMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));

@@ -23,6 +23,7 @@ import org.baratinage.ui.component.CommonDialog;
 import org.baratinage.ui.component.SimpleNumberField;
 import org.baratinage.ui.component.SimpleTextField;
 import org.baratinage.ui.config.ConfigSet;
+import org.baratinage.ui.shortcuts.ShortcutManager;
 import org.baratinage.utils.ConsoleLogger;
 import org.baratinage.utils.Misc;
 import org.baratinage.utils.fs.DirUtils;
@@ -84,8 +85,12 @@ public class AppSetup {
 
     public static final String PATH_CONFIGURATION_FILE = Path.of(PATH_CONFIGURATION_DIR, "config.json")
             .toString();
+    public static final String PATH_SHORTCUTS_FILE = Path.of(PATH_CONFIGURATION_DIR, "shortcuts.json")
+            .toString();
 
+    // setting up config, shortcuts, colors and icons (order matters)
     public static ConfigSet CONFIG;
+    public static ShortcutManager SHORTCUTS;
     public static AppColors COLORS;
     public static AppIcons ICONS;
 
@@ -97,6 +102,8 @@ public class AppSetup {
     public static void setup() {
         CONFIG = new ConfigSet();
         CONFIG.loadConfig();
+        SHORTCUTS = new ShortcutManager();
+        SHORTCUTS.loadShortcuts();
 
         ConsoleLogger.log(String.format("BaRatinAGE root directory: %s", PATH_APP_ROOT_DIR));
 
@@ -135,6 +142,7 @@ public class AppSetup {
 
     public static void cleanup() {
         CONFIG.saveConfig();
+        SHORTCUTS.saveConfig();
         DirUtils.deleteDir(PATH_APP_TEMP_DIR);
         DirUtils.deleteDir(PATH_BAM_WORKSPACE_DIR);
     }
