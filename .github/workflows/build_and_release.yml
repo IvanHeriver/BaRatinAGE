@@ -121,12 +121,15 @@ jobs:
 
           echo "Using release tag: $tag"
 
+          mkdir /tmp/release-example-assets
+          cd /tmp/release-example-assetes
+
           gh release download "$tag" \
             --repo BaRatin-tools/BaRatinAGE \
 
           dest="./${{ matrix.MAIN_DIR }}/${{ env.EXAMPLES_DIR }}"
-            mkdir -p "$dest"
-            mv * "$dest"/
+          mkdir -p "$dest"
+          mv * "$dest"/
 
       - name: Download BaM executable from latest release
         shell: pwsh
