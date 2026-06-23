@@ -123,11 +123,10 @@ jobs:
 
           gh release download "$tag" \
             --repo BaRatin-tools/BaRatinAGE \
-            --pattern "*.bam"
 
           dest="./${{ matrix.MAIN_DIR }}/${{ env.EXAMPLES_DIR }}"
             mkdir -p "$dest"
-            mv *.bam "$dest"/
+            mv "$dest"/
 
       - name: Download BaM executable from latest release
         shell: pwsh
