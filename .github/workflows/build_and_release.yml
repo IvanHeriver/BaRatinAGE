@@ -122,7 +122,7 @@ jobs:
           echo "Using release tag: $tag"
 
           mkdir /tmp/release-example-assets
-          cd /tmp/release-example-assetes
+          cd /tmp/release-example-assets
 
           gh release download "$tag" \
             --repo BaRatin-tools/BaRatinAGE \
