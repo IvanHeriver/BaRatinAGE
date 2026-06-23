@@ -126,7 +126,7 @@ jobs:
 
           dest="./${{ matrix.MAIN_DIR }}/${{ env.EXAMPLES_DIR }}"
             mkdir -p "$dest"
-            mv "$dest"/
+            mv * "$dest"/
 
       - name: Download BaM executable from latest release
         shell: pwsh
